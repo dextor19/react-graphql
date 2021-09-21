@@ -1,24 +1,47 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import {
+  gql,
+  useQuery
+} from '@apollo/client';
 
 function App() {
+  const FETCH_ANIME_SERIES = gql`
+  query fetchAnimeSeries($page: Int, $perPage: Int, $search: String) {
+    Page(page: $page, perPage: $perPage) {
+      media(isAdult: false, sort: POPULARITY_DESC, search: $search) {
+        id
+        title {
+          english
+        }
+        coverImage {
+          large
+        }
+      }
+      pageInfo {
+        currentPage
+        hasNextPage
+        total
+      }
+    }
+  }
+`;
+  
+  const { loading, error, data } = useQuery(FETCH_ANIME_SERIES);
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error :(</p>;
+  if (!data) return <p>Not found</p>;
+
+  
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      {data.Page.media.map((item:any) => (
+      <div>
+        <h1>{item.title.english}</h1>
+        <p>{item.id}</p>
+        <img src={item.coverImage.large} alt=""></img>
+      </div>
+      ))}
     </div>
   );
 }
