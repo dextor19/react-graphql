@@ -3,6 +3,7 @@ import {
   gql,
   useQuery
 } from '@apollo/client';
+import Button from '@mui/material/Button';
 
 function App() {
   const FETCH_ANIME_SERIES = gql`
@@ -35,6 +36,7 @@ function App() {
   
   return (
     <div>
+      <Button variant="contained">Hello World</Button>
       {data.Page.media.map((item:any) => (
       <div>
         <h1>{item.title.english}</h1>
